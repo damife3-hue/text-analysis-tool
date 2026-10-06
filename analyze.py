@@ -1,12 +1,15 @@
 from random_username.generate import generate_username
 import nltk
+import re
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
-from nltk.corpus import wordnet
-wordLemmatizer = WordNetLemmatizer()
+from nltk.corpus import wordnet, stopwords
+nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger_eng')
-import re
+wordLemmatizer = WordNetLemmatizer()
+stopWords = set(stopwords.words('english'))
+
 
 def welcomeUser():
     print("Welcome to the text analysis tool, I will mine and analyze a body of text from a file you give me")
@@ -101,14 +104,14 @@ def cleanseWordList(posTaggedWordTuples):
         word = posTaggedWordTuple[0]
         pos = posTaggedWordTuple[1]
         cleansedWord = word.replace(".","").lower()
-        if (not re.search(invalidWordPattern, word)) and len(word) > 1:
+        if (not re.search(invalidWordPattern, word)) and len(word) > 1 and cleansedWord not in stopWords:
             cleansedWords.append(wordLemmatizer.lemmatize(cleansedWord, treebankPosToWordnetPos(pos))) 
     return cleansedWords
 
 # Get User Details
-# welcomeUser()
-# username = getUsername()
-# greetUser(username)
+welcomeUser()
+username = getUsername()
+greetUser(username)
 
 # Extract and Tokenize Text
 articleTextRaw = getArticleText()
