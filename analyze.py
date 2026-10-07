@@ -5,16 +5,17 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet, stopwords
 from wordcloud import WordCloud
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger_eng')
+nltk.download('vader_lexicon')
 wordLemmatizer = WordNetLemmatizer()
 stopWords = set(stopwords.words('english'))
-
+sentimentAnalyzer = SentimentIntensityAnalyzer()
 
 def welcomeUser():
     print("Welcome to the text analysis tool, I will mine and analyze a body of text from a file you give me")
-
 
 # Get Username
 def getUsername():
@@ -41,7 +42,6 @@ def getUsername():
 
     print("\nExhausted all " + str(maxAttempts) + " attempts, Assigning username instead...")
     return generate_username()[0]
-         
 
 def greetUser(name):
     # Greet the user
@@ -109,7 +109,7 @@ def cleanseWordList(posTaggedWordTuples):
             cleansedWords.append(wordLemmatizer.lemmatize(cleansedWord, treebankPosToWordnetPos(pos))) 
     return cleansedWords
 
-# Get User Details
+# # Get User Details
 welcomeUser()
 username = getUsername()
 greetUser(username)
@@ -135,5 +135,9 @@ wordcloud = WordCloud(width = 1000, height = 700, \
                       background_color="white", colormap="Set3", \
                         collocations=False).generate(separator.join(articleWordsCleansed))
 wordcloud.to_file("results/wordcloud.png")
+
+# Run Sentiment Analysis
+sentimentResult = sentimentAnalyzer.polarity_scores(articleTextRaw)
+
 # Print for testing
-print("done!")
+print(sentimentResult)
