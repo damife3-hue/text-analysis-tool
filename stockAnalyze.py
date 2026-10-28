@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 import warnings
-warnings.filterwarnings("ignore")
+warnings.filterwarnings('ignore')
 
 def extractBasicInfo(data):
     keysToExtract = ['longName','website','sector','fullTimeEmployees', 'marketCap', 'totalRevenue','epsTrailingTwelveMonths']
@@ -43,19 +43,26 @@ def getCompanyNews(company):
         allNewsArticles.append(newsDictToAdd)
     return allNewsArticles
 
+def extractnewsArticleTextFromHtml(soup):
+    allText = ''
+    result = soup.find_all('div', {'class':'body-wrap'})
+    for res in result:
+        allText += res.text
+    return allText
+
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36'
 }
 
 def extractCompanyNewsArticles(newsArticles):
+    allArticlesText = ''
     for newsArticle in newsArticles:
         url = newsArticle['link']
         page = requests.get(url, headers=headers)
         soup = BeautifulSoup(page.text,'html.parser') 
-        if soup.findAll(text='Continue reading'):
-            print('Tag found - should skip')
-        else:
-            print('Tag not found - dont skip')
+        if not soup.findAll('a', attrs={'aria-label': 'Continue Reading'}):
+            allArticlesText += extractnewsArticleTextFromHtml(soup)
+        return allArticlesText
 
 def getCompanyStockInfo(tickerSymbol):
     # Get data from Yahoo Finance API
@@ -66,6 +73,7 @@ def getCompanyStockInfo(tickerSymbol):
     priceHistory = getPriceHistory(company)
     futureEarningDates = getEarningDates(company)
     newsArticles = getCompanyNews(tickerSymbol)
-    extractCompanyNewsArticles(newsArticles)
+    newsArticlesAllText = extractCompanyNewsArticles(newsArticles) 
+    print(newsArticlesAllText)
 
 getCompanyStockInfo('MSFT')
