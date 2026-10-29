@@ -57,7 +57,7 @@ headers = {
 }
 
 def extractCompanyNewsArticles(newsArticles):
-    allArticlesText = ''
+    allArticlesText = '' 
     for newsArticle in newsArticles:
         url = newsArticle['link']
         page = requests.get(url, headers=headers)
