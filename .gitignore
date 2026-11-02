@@ -1,0 +1,3 @@
+__pycache__
+results/* 
+# This /* ignores all files in the results directory, but not the directory itself
