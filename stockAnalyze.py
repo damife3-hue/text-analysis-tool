@@ -64,7 +64,7 @@ def extractCompanyNewsArticles(newsArticles):
         soup = BeautifulSoup(page.text,'html.parser') 
         if not soup.findAll('a', attrs={'aria-label': 'Continue Reading'}):
             allArticlesText += extractnewsArticleTextFromHtml(soup)
-        return allArticlesText
+    return allArticlesText
 
 def getCompanyStockInfo(tickerSymbol):
     # Get data from Yahoo Finance API

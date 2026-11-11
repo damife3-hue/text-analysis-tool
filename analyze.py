@@ -108,8 +108,23 @@ def cleanseWordList(posTaggedWordTuples):
             cleansedWords.append(wordLemmatizer.lemmatize(cleansedWord, treebankPosToWordnetPos(pos))) 
     return cleansedWords
 
+empty = {
+            "data": {
+                "keySentences": [],
+                "wordsPerSentence": 0,
+                "sentiment": {"neg": 0, "neu": 0, "pos": 0, "compound": 0},
+                "wordCloudFilePath": None,
+            },
+            "metadata": {
+                "sentencesAnalyzed": 0,
+                "wordsAnalyzed": 0,
+            },
+        }
+
 def analyzeText(textToAnalyze):
     articleSentences = tokenizeSentences(textToAnalyze)
+    if not articleSentences:
+        return empty.copy()
     articleWords = tokenizeWords(articleSentences)
 
     # Get Sentence Analytics
